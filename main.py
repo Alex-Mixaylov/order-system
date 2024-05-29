@@ -1,7 +1,9 @@
 # 1. Импортируем нужные модули:
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 import sqlite3
+
 
 # 10. Создаём базу данных. Работаем сверху, после блока импорта.
 def init_db():
@@ -41,6 +43,20 @@ def view_orders():
         tree.insert("", tk.END, values=row)
     conn.close()
 
+# 14. Создаём функцию для завершения заказа:
+def complete_order():
+    selected_item = tree.selection()
+    if selected_item:
+        order_id = tree.item(selected_item[0])['values'][0]
+        conn = sqlite3.connect('business_orders.db')
+        cur = conn.cursor()
+        cur.execute("UPDATE orders SET status = 'Завершен' WHERE id = ?", (order_id,))
+        conn.commit()
+        conn.close()
+        view_orders()
+    else:
+        messagebox.showwarning("Предупреждение", "Выберите заказ для завершения")
+
 # 2. Создаём окошко интерфейса:
 app = tk.Tk()
 app.title("Система управления заказами")
@@ -60,6 +76,10 @@ order_details_entry.pack()
 # 6. Создаём кнопку, которая будет добавлять введённые данные в таблицу:
 add_button = tk.Button(app, text="Добавить заказ", command=add_order)
 add_button.pack()
+
+# 15. Создаём кнопку, которая будет завершать выбранный заказ:
+complete_button = tk.Button(app, text="Завершить заказ", command=complete_order)
+complete_button.pack()
 
 #7. Используем новую функцию, чтобы создать таблицу из колонок, которые в ней размещены:
 columns = ("id", "customer_name", "order_details", "status")

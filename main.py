@@ -16,9 +16,6 @@ def init_db():
         """)
     conn.commit()
     conn.close()
-# 11. Дополняем финальную строчку, пишем перед ней:
-    init_db()
-    view_orders()
 
 # 12. Создаём функцию добавления заказа. Здесь же устанавливаем автоматическое назначение статуса ‘Новый’.
 def add_order():
@@ -70,8 +67,12 @@ tree = ttk.Treeview(app, columns=columns, show="headings")
 
 # 8. Чтобы перебрать кортеж и поставить каждый его элемент в качестве кортежа, используем цикл for:
 for column in columns:
-        tree.heading(column, text=column)
-        tree.pack()
+    tree.heading(column, text=column)
+tree.pack()
+
+# 11. Дополняем финальную строчку, пишем перед ней:
+init_db()
+view_orders()
 
 # 9. Чтобы посмотреть, как сейчас всё выглядит, вводим команду:
 app.mainloop()
